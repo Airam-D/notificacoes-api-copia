@@ -4,6 +4,7 @@ const router = express.Router();
 const EventoController = require("../controllers/EventoController");
 const upload = require("../config/upload");
 const cacheMiddleware = require("../middlewares/cacheMiddleware");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 /**
  * @swagger
@@ -128,6 +129,8 @@ router.get("/:id", cacheMiddleware(30), EventoController.show);
  *   post:
  *     summary: Criar um novo evento
  *     tags: [Eventos]
+ *     security:
+ *      - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -168,7 +171,7 @@ router.get("/:id", cacheMiddleware(30), EventoController.show);
  *             schema:
  *               $ref: '#/components/schemas/Erro'
  */
-router.post("/", EventoController.store);
+router.post("/", authMiddleware, EventoController.store);
 
 /**
  * @swagger
@@ -176,6 +179,8 @@ router.post("/", EventoController.store);
  *   post:
  *     summary: Fazer upload do banner do evento
  *     tags: [Eventos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -221,30 +226,35 @@ router.post("/", EventoController.store);
  *               $ref: '#/components/schemas/Erro'
  */
 // POST /eventos/:id/banner — enviar imagem do banner
-router.post("/:id/banner", upload.single("banner"), async (req, res, next) => {
-  try {
-    const { Evento } = require("../models");
-    const evento = await Evento.findByPk(req.params.id);
+router.post(
+  "/:id/banner",
+  authMiddleware,
+  upload.single("banner"),
+  async (req, res, next) => {
+    try {
+      const { Evento } = require("../models");
+      const evento = await Evento.findByPk(req.params.id);
 
-    if (!evento) {
-      return res.status(404).json({ erro: "Evento não encontrado" });
+      if (!evento) {
+        return res.status(404).json({ erro: "Evento não encontrado" });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ erro: "Nenhum arquivo enviado" });
+      }
+
+      // Salvar o caminho do arquivo no banco
+      await evento.update({ banner: `/uploads/${req.file.filename}` });
+
+      res.json({
+        mensagem: "Banner atualizado com sucesso",
+        banner: `/uploads/${req.file.filename}`,
+      });
+    } catch (erro) {
+      next(erro);
     }
-
-    if (!req.file) {
-      return res.status(400).json({ erro: "Nenhum arquivo enviado" });
-    }
-
-    // Salvar o caminho do arquivo no banco
-    await evento.update({ banner: `/uploads/${req.file.filename}` });
-
-    res.json({
-      mensagem: "Banner atualizado com sucesso",
-      banner: `/uploads/${req.file.filename}`,
-    });
-  } catch (erro) {
-    next(erro);
-  }
-});
+  },
+);
 
 /**
  * @swagger
@@ -252,6 +262,8 @@ router.post("/:id/banner", upload.single("banner"), async (req, res, next) => {
  *   put:
  *     summary: Atualizar um evento
  *     tags: [Eventos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -295,7 +307,7 @@ router.post("/:id/banner", upload.single("banner"), async (req, res, next) => {
  *             schema:
  *               $ref: '#/components/schemas/Erro'
  */
-router.put("/:id", EventoController.update);
+router.put("/:id", authMiddleware, EventoController.update);
 
 /**
  * @swagger
@@ -303,6 +315,8 @@ router.put("/:id", EventoController.update);
  *   delete:
  *     summary: Deletar um evento
  *     tags: [Eventos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -319,6 +333,6 @@ router.put("/:id", EventoController.update);
  *             schema:
  *               $ref: '#/components/schemas/Erro'
  */
-router.delete("/:id", EventoController.destroy);
+router.delete("/:id", authMiddleware, EventoController.destroy);
 
 module.exports = router;
