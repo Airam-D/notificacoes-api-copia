@@ -5,3 +5,4 @@ src/config/database.json
 uploads/
 api-alunos/
 aulas/
+.env.test

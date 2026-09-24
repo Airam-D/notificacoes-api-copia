@@ -128,6 +128,30 @@ npm run db:seed:undo     # Desfazer seeds
 npm run db:reset         # Reset completo (desfaz → migra → seed)
 ```
 
+## 🧪 Testes (Jest)
+
+```bash
+npm run test:unit         # Testes unitários (não usam banco)
+npm run test:integration  # Testes de integração (usam o banco de TESTE)
+npm run test:cov          # Testes unitários + relatório de cobertura
+```
+
+Os testes de integração usam um banco **separado** do de desenvolvimento, porque apagam dados a cada teste. Para configurar uma vez:
+
+1. No MySQL: `CREATE DATABASE notificacoes_test;`
+2. Em `src/config/database.json`, preencha o bloco `"test"` (veja `database.json.example`)
+3. Crie as tabelas no banco de teste: `npx sequelize-cli db:migrate --env test`
+4. Copie `.env.test.example` para `.env.test` e preencha a senha
+
+```
+tests/
+├── setup.js         → Carrega o .env.test antes dos testes
+├── helpers/         → limparBanco (esvazia o banco de teste)
+├── unit/            → Testes unitários
+├── integration/     → Testes de integração
+└── endpoint/        → Testes de endpoint (Supertest)
+```
+
 ## 📁 Estrutura do Projeto
 
 ```
