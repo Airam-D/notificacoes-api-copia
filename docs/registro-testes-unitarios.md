@@ -1,6 +1,6 @@
 # Registro de Testes Unitários
-Aluno: [Seu Nome Completo]
-Grupo: [Nome do Seu Grupo]
+Aluno: Airam D'Avilla Costa
+Grupo: 05
 Data: 24/09/2026
 
 ## Testes escritos
@@ -21,5 +21,5 @@ Esperado: Lançar ValidationError por conter caracteres não numéricos.
 Obtido: A função converteu parcialmente a string para o número 12 e não lançou o erro esperado.
 
 ## Cobertura
-% Lines da linha "helpers": [Substitua pelo valor obtido no comando, ex: 100%]
+% Lines da linha "helpers": 100%
 Em uma frase, o que esse número significa: Representa a percentagem de linhas de código das funções utilitárias em helpers que foram efetivamente executadas pela suíte de testes.
