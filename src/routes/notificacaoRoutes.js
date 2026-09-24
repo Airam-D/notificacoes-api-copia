@@ -173,7 +173,7 @@ router.post("/:id/reenviar", async (req, res, next) => {
  *                   example: E-mail de teste enviado!
  *                 visualizarEm:
  *                   type: string
- *                   example: http://192.168.1.200:8025
+ *                   example: http://10.187.226.125:8225
  */
 // POST /notificacoes/teste-email — enviar e-mail de teste
 router.post("/teste-email", async (req, res, next) => {
