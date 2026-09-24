@@ -6,6 +6,8 @@ let transporter = null;
 // IP do servidor MailPit (professor informa)
 const MAILPIT_HOST = process.env.SMTP_HOST;
 const MAILPIT_PORT = process.env.SMTP_PORT;
+// Porta do painel web do MailPit — NÃO é a mesma do SMTP, não dá pra deduzir uma da outra
+const MAILPIT_PANEL_PORT = process.env.MAILPIT_PANEL_PORT;
 
 async function inicializar() {
   transporter = nodemailer.createTransport({
@@ -20,7 +22,7 @@ async function inicializar() {
     await transporter.verify();
     console.log("═══════════════════════════════════════════");
     console.log("📧 Servidor de e-mail conectado!");
-    console.log(`   MailPit: http://${MAILPIT_HOST}:8025`);
+    console.log(`   MailPit: http://${MAILPIT_HOST}:${MAILPIT_PANEL_PORT}`);
     console.log("═══════════════════════════════════════════");
   } catch (erro) {
     console.error("⚠️ Servidor de e-mail indisponível:", erro.message);
@@ -41,11 +43,11 @@ async function enviar(para, assunto, html) {
   });
 
   console.log(`📧 E-mail enviado para ${para} (ID: ${info.messageId})`);
-  console.log(`   Visualizar em: http://${MAILPIT_HOST}:8025`);
+  console.log(`   Visualizar em: http://${MAILPIT_HOST}:${MAILPIT_PANEL_PORT}`);
 
   return {
     messageId: info.messageId,
-    previewUrl: `http://${MAILPIT_HOST}:8025`,
+    visualizarEm: `http://${MAILPIT_HOST}:${MAILPIT_PANEL_PORT}`,
   };
 }
 

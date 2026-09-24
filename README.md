@@ -105,8 +105,8 @@ A API envia e-mails automaticamente usando o **Padrão Observer**:
 - **Confirmação de inscrição** — enviado ao criar uma inscrição
 - **Cancelamento** — enviado ao cancelar uma inscrição
 
-Em desenvolvimento, os e-mails são capturados pelo **MailPit** (servidor SMTP local).
-Visualize os e-mails em `http://MAILPIT_IP:8025`.
+Em desenvolvimento, os e-mails são capturados pelo **MailPit** (servidor SMTP compartilhado da sala).
+Visualize os e-mails em `http://10.187.226.125:8225`.
 
 ## 🛠️ Tecnologias
 
