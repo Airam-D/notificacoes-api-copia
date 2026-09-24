@@ -41,6 +41,10 @@
     "sequelize-cli": "^6.6.5"
   },
   "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/aulas/"
+    ],
     "setupFiles": [
       "<rootDir>/tests/setup.js"
     ],

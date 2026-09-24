@@ -8,9 +8,114 @@ Este projeto faz parte da Situação de Aprendizagem do curso de Programação B
 O módulo é responsável por enviar notificações automáticas (confirmação de inscrição, cancelamento)
 para participantes de eventos, utilizando o Padrão Observer com Node.js EventEmitter e Nodemailer.
 
-## 🚀 Como Rodar
+## 🧪 Testes — comece aqui (alunos de TSOF)
 
-1. Clone o repositório:
+> Para **rodar os testes**, você **não precisa** subir a API, configurar o `.env` nem o MailPit. Siga só os passos abaixo.
+
+### Passo 1 — Fork e clone (uma vez)
+
+1. Abra **https://github.com/wsabor/notificacoes-api** e clique em **Fork** → **Create fork**.
+   Agora você tem uma cópia em `github.com/SEU-USUARIO/notificacoes-api`.
+2. Clone **o seu fork** numa pasta nova (troque `SEU-USUARIO` pelo seu usuário do GitHub):
+   ```bash
+   git clone https://github.com/SEU-USUARIO/notificacoes-api.git tsof-notificacoes
+   cd tsof-notificacoes
+   ```
+3. Instale as dependências (o **Jest** já vem junto):
+   ```bash
+   npm install
+   ```
+
+### Passo 2 — Testes unitários (não usam banco)
+
+```bash
+npm run test:unit
+```
+
+✅ A saída termina com `Tests: ... passed`. Se ainda não houver nenhum teste em `tests/unit/`, aparece `No tests found` — é normal.
+
+### Passo 3 — Banco de teste (uma vez, só para os testes de integração)
+
+Os testes de integração usam um banco **separado** do banco da API, porque **apagam os dados** a cada teste.
+
+1. No MySQL Workbench, crie o banco:
+   ```sql
+   CREATE DATABASE notificacoes_test;
+   ```
+2. Crie o `database.json` a partir do modelo:
+   ```bash
+   cp src/config/database.json.example src/config/database.json
+   ```
+   Abra `src/config/database.json` e, no bloco **`"test"`**, troque `sua_senha_aqui` pela senha do seu MySQL.
+3. Crie as tabelas **no banco de teste**:
+   ```bash
+   npx sequelize-cli db:migrate --env test
+   ```
+   ✅ Aparecem várias linhas terminando em `migrated`.
+4. Crie o `.env.test` a partir do modelo:
+   ```bash
+   cp .env.test.example .env.test
+   ```
+   Abra o `.env.test` e troque `sua_senha_aqui` pela senha do seu MySQL.
+
+> 💡 No Windows, os comandos `cp` funcionam no terminal do VS Code (PowerShell). Se preferir, copie e renomeie os arquivos pelo próprio VS Code. Atenção para o arquivo não virar `.env.test.txt`.
+
+> ⚠️ O `.env.test` tem a sua senha e **não vai para o GitHub** (está no `.gitignore`). Confira com `git status`.
+
+### Passo 4 — Testes de integração
+
+```bash
+npm run test:integration
+```
+
+✅ A saída termina com `Tests: ... passed`.
+
+### Passo 5 — Receber atualizações do professor (Sync fork)
+
+Quando o professor publicar arquivos novos:
+
+1. No GitHub, abra **o seu fork** e clique em **Sync fork** → **Update branch**.
+2. No terminal:
+   ```bash
+   git pull
+   ```
+
+> Faça **commit e push** do seu trabalho **antes** do Sync fork. Se o `git pull` responder `Need to specify how to reconcile divergent branches`, use:
+> ```bash
+> git pull --no-rebase --no-edit
+> ```
+
+### Comandos de teste
+
+```bash
+npm run test:unit         # Testes unitários (não usam banco)
+npm run test:integration  # Testes de integração (usam o banco de TESTE)
+npm run test:cov          # Testes unitários + relatório de cobertura
+```
+
+### Problemas comuns
+
+| Mensagem | Solução |
+|---|---|
+| `jest: command not found` / `'jest' não é reconhecido` | Rode `npm install` |
+| `Unknown database 'notificacoes_test'` | Crie o banco (Passo 3.1) |
+| `Access denied for user ''` | Falta o `.env.test` ou ele está com outro nome (Passo 3.4) |
+| `Access denied for user 'root'` | Senha errada no `.env.test` |
+| `Dialect needs to be explicitly supplied` | Falta o `database.json` ou o bloco `"test"` (Passo 3.2) |
+| Todos os testes falham na linha do `limparBanco`, sem mensagem | Faltam as tabelas: `npx sequelize-cli db:migrate --env test` |
+
+```
+tests/
+├── setup.js         → Carrega o .env.test antes dos testes
+├── helpers/         → limparBanco (esvazia o banco de teste)
+├── unit/            → Testes unitários
+├── integration/     → Testes de integração
+└── endpoint/        → Testes de endpoint (Supertest)
+```
+
+## 🚀 Como Rodar a API
+
+1. Clone o repositório (alunos: use o seu fork — ver seção de testes acima):
    ```bash
    git clone https://github.com/SEU-USUARIO/notificacoes-api.git
    cd notificacoes-api
@@ -126,30 +231,6 @@ npm run db:migrate:undo  # Desfazer última migration
 npm run db:seed          # Popular com dados iniciais
 npm run db:seed:undo     # Desfazer seeds
 npm run db:reset         # Reset completo (desfaz → migra → seed)
-```
-
-## 🧪 Testes (Jest)
-
-```bash
-npm run test:unit         # Testes unitários (não usam banco)
-npm run test:integration  # Testes de integração (usam o banco de TESTE)
-npm run test:cov          # Testes unitários + relatório de cobertura
-```
-
-Os testes de integração usam um banco **separado** do de desenvolvimento, porque apagam dados a cada teste. Para configurar uma vez:
-
-1. No MySQL: `CREATE DATABASE notificacoes_test;`
-2. Em `src/config/database.json`, preencha o bloco `"test"` (veja `database.json.example`)
-3. Crie as tabelas no banco de teste: `npx sequelize-cli db:migrate --env test`
-4. Copie `.env.test.example` para `.env.test` e preencha a senha
-
-```
-tests/
-├── setup.js         → Carrega o .env.test antes dos testes
-├── helpers/         → limparBanco (esvazia o banco de teste)
-├── unit/            → Testes unitários
-├── integration/     → Testes de integração
-└── endpoint/        → Testes de endpoint (Supertest)
 ```
 
 ## 📁 Estrutura do Projeto
