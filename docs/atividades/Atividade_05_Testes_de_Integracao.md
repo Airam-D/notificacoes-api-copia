@@ -231,15 +231,15 @@ git push
 
 ## Checklist
 
-- [ ] Sync fork feito, os dois arquivos de `tests/integration/` no notebook
-- [ ] Banco `notificacoes_test` criado, com as tabelas
-- [ ] `npm run test:integration` rodando
-- [ ] Teste 1 (evento) verde — o `todo` sumiu
-- [ ] Teste 2 (e-mail inválido) verde
-- [ ] Teste 3 (desafio) escrito
-- [ ] `docs/registro-testes-integracao.md` preenchido
-- [ ] `git status` sem `.env.test` e sem `database.json`
-- [ ] Commit e push no fork
+- [x] Sync fork feito, os dois arquivos de `tests/integration/` no notebook
+- [x] Banco `notificacoes_test` criado, com as tabelas
+- [x] `npm run test:integration` rodando
+- [x] Teste 1 (evento) verde — o `todo` sumiu
+- [x] Teste 2 (e-mail inválido) verde
+- [x] Teste 3 (desafio) escrito
+- [x] `docs/registro-testes-integracao.md` preenchido
+- [x] `git status` sem `.env.test` e sem `database.json`
+- [x] Commit e push no fork
 
 ---
 
